@@ -39,8 +39,11 @@ export const Users: React.FC<User> = () => {
         Show more
       </button>
       <Form reloadUsers={() => {
-        loadUsers();
-        setUsersCount(6);
+          if (usersCount === 6) {
+              loadUsers();
+          } else {
+              setUsersCount(6);
+          }
       }} />
     </div>
   );
