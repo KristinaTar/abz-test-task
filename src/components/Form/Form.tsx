@@ -142,18 +142,17 @@ export const Form: React.FC<Props> = ({ reloadUsers }) => {
           <div className='form__options'>
             <p>Select your position</p>
             {positions && positions.map(position => (
-              <>
+              <div key={position.id}>
                 <input
                   className='form__position'
                   type="radio" id="html"
                   name="position"
                   value={position.id}
-                  key={position.id}
                   checked={selectedPosition === position.id}
                   onChange={() => setSelectedPosition(position.id)}
                 />
                 <label htmlFor="html">{position.name}</label><br></br>
-              </>
+              </div>
             ))}
           </div>
           <input

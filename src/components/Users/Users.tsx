@@ -24,7 +24,7 @@ export const Users: React.FC<User> = () => {
       <div className='users__container'>
         {fetching ? <Loader /> :
           (users.length > 0 ? (users.map(user => (
-            <div className='users__card'>
+            <div key={user.phone+'-'+user.email} className='users__card'>
               <div > <img className='users__photo' src={user.photo} alt='user pic' /></div>
               <div>{user.name}</div>
               <div>
