@@ -39,8 +39,8 @@ export const Users: React.FC<User> = () => {
         Show more
       </button>
       <Form reloadUsers={() => {
-        setUsersCount(6);
         loadUsers();
+        setUsersCount(6);
       }} />
     </div>
   );
