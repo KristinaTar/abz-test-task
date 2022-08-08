@@ -1,0 +1,146 @@
+@import '../vars';
+
+.success-image {
+  margin: 50px auto 200px;
+  display: block;
+}
+
+.form {
+  &__container {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+
+    @media only screen and (max-width: $base-width-small) {
+      max-width: 328px;
+    }
+  }
+
+  &__input {
+    display: block;
+    width: 100%;
+    height: 54px;
+    margin-top: 50px;
+    border: 1px solid $color-input-border;
+    border-radius: 4px;
+    box-sizing: border-box;
+    padding-left: 16px;
+    background-color: $color-background;
+  }
+
+  &__label {
+    margin-left: 16px;
+    margin-top: 38px;
+    position: absolute;
+    background-color: $color-background;
+    border: 4px solid $color-background;
+    font-weight: 500;
+    font-size: 12px;
+  }
+
+  &__phone {
+    color: #7E7E7E;
+    font-size: 12px;
+    line-height: 14px;
+    margin-top: 4px;
+  }
+
+  &__options {
+    margin-top: 25px;
+  }
+
+  &__position {
+    margin-top: 7px;
+    background: #00BDD3;
+  }
+
+  &__label-error {
+    color: $color-error;
+  }
+
+}
+
+.input_container {
+  width: 100%;
+}
+
+textarea:focus,
+input:focus {
+  outline: none;
+}
+
+input#img-uploader {
+  display: none;
+}
+
+.file {
+  &__input-container {
+    margin-top: 50px;
+    height: 54px;
+  }
+
+  &__input {
+    display: inline-block;
+    height: 100%;
+    width: calc(100% - 83px);
+    border: 1px solid #D0CFCF;
+    border-left: 0;
+    border-radius: 0 4px 4px 0;
+    box-sizing: border-box;
+    padding-left: 16px;
+  }
+
+  &__button {
+    display: inline-block;
+    vertical-align: top;
+    width: 83px;
+    height: 100%;
+    border: 1px solid rgba(0, 0, 0, 0.87);
+    border-radius: 4px 0 0 4px;
+    box-sizing: border-box;
+    text-align: center;
+    cursor: pointer;
+  }
+
+  &__button:before {
+    content: '';
+    display: inline-block;
+    vertical-align: middle;
+    height: 100%;
+  }
+
+}
+
+.btn_signUp {
+  background: #F4E041;
+  border-radius: 80px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  width: 120px;
+  height: 34px;
+  line-height: 26px;
+  margin-top: 54px;
+}
+
+.error {
+  &__message {
+    position: absolute;
+    color: $color-error;
+    margin-top: 4px;
+    margin-left: 10px;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 14px;
+  }
+
+  &__border {
+    border: 2px solid $color-error;
+  }
+
+  &__border-file--input {
+    border: 2px solid $color-error;
+    border-left: 0;
+  }
+}
