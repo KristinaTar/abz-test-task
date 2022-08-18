@@ -33,7 +33,7 @@ function App() {
           </div>
           <button className="header__button">Sign up</button>
         </header>
-        <Users photo={''} name={''} position={''} email={''} phone={''} />
+        <Users photo={''} name={''} selectedPosition={''} email={''} phone={''} />
       </div>
     </div>
   );

@@ -112,6 +112,7 @@ button:hover {
 button:disabled {
   background-color: $color-button-disabled;
   color: white;
+  cursor: no-drop;
 }
 
 .main-content {

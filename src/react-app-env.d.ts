@@ -3,7 +3,7 @@
 type User = {
   photo:string;
   name: string;
-  position: string;
+  selectedPosition: string;
   email:string;
   phone:string;
 };

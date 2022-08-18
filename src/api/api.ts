@@ -1,17 +1,19 @@
-const BASE_URL = 'https://frontend-test-assignment-api.abz.agency/api/v1/users?page=1&count=';
+
+const BASE_URL = 'https://frontend-test-assignment-api.abz.agency/api/v1/';
 
 export const getUsers = (count = 6) => {
-  return fetch(BASE_URL + count)
+  return fetch(BASE_URL+'users?page=1&count=' + count)
     .then(response => response.json());
+
 };
 
 export const getPosition = () => {
-  return fetch('https://frontend-test-assignment-api.abz.agency/api/v1/positions')
+  return fetch(BASE_URL + 'positions')
     .then(response => response.json());
 };
 
 const getToken = () => {
-  return fetch('https://frontend-test-assignment-api.abz.agency/api/v1/token')
+  return fetch(BASE_URL + 'token')
     .then(response => response.json())
     .then(data => data.token)
     .catch(function (error) {
@@ -34,7 +36,7 @@ export const addNewUser = async (
   formData.append('phone', phone); 
   formData.append('photo', file);
 
-  return fetch('https://frontend-test-assignment-api.abz.agency/api/v1/users', {
+  return fetch(BASE_URL + 'users', {
     method: 'POST',
     body: formData,
     headers: {
@@ -43,6 +45,7 @@ export const addNewUser = async (
   }).then(function (response) {
     return response.json();
   }).then(function (data) {
+    console.log(data)
       return data;
     }).catch(function (error) {
       throw (error);

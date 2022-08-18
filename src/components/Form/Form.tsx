@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './Form.scss';
 import { getPosition, addNewUser } from '../../api/api';
 import successImage from '../../images/success-image.svg';
+import {validateEmail, validateName, validatePhone, validatePhoto} from "../../helpers/validators";
 
 
 const PHOTO_PLACEHOLDER = 'Upload photo';
@@ -15,35 +16,60 @@ export const Form: React.FC<Props> = ({ reloadUsers }) => {
   const [fileInfo, setFileInfo] = useState({
     name: PHOTO_PLACEHOLDER,
     width: 0,
-    heigh: 0,
+    height: 0,
     size: 0,
   });
   const [file, setFile] = useState<File | null>(null);
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [selectedPosition, setSelectedPosition] = useState(1)
-  const [errorName, setErrorName] = useState('');
-  const [errorEmail, setErrorEmail] = useState('');
-  const [errorPhone, setErrorPhone] = useState('');
-  const [errorFile, setErrorFile] = useState('');
+  const [userInfo, setUserInfo] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    selectedPosition: 1,
+  })
+
+  const [error, setError]=useState({
+    errorName: '',
+    errorEmail: '',
+    errorPhone: '',
+    errorFile: '',
+  });
+
   const [sent, setSent] = useState(false);
 
-  function handleName(e: React.ChangeEvent<HTMLInputElement>) {
-    setName(e.target.value);
-    setErrorName('');
+  function handleName(name: string) {
+    setUserInfo({...userInfo, name});
+    setError({...error, errorName: ''});
+  }
+
+  function handleEmail(email: string) {
+    setUserInfo({...userInfo, email: email.toLocaleLowerCase()});
+    setError({...error, errorEmail: ''});
+  }
+
+  function handlePhone(phone: string) {
+    setUserInfo({...userInfo, phone: phone});
+    setError({...error, errorPhone: ''});
 
   }
 
-  function handleEmail(e: React.ChangeEvent<HTMLInputElement>) {
-    setEmail(e.target.value.toLocaleLowerCase());
-    setErrorEmail('');
+  function nameBlurHandler (name: string){
+    if(!validateName(name)){
+      setError({...error, errorName: "Wrong name"})
+    }
   }
 
-  function handlePhone(e: React.ChangeEvent<HTMLInputElement>) {
-    setPhone(e.target.value);
-    setErrorPhone('');
+  function emailBlurHandler(email: string){
+    if(!validateEmail(email)) {
+      setError({...error, errorEmail: "Not valid email"})
+    }
   }
+
+  function phoneBlurHandler(phone: string){
+    if(!validatePhone(phone)) {
+      setError({...error, errorPhone: "Not valid phone"})
+    }
+  }
+
 
 
 
@@ -51,13 +77,13 @@ export const Form: React.FC<Props> = ({ reloadUsers }) => {
     event.preventDefault();
 
     if (!file) {
-      setErrorFile('Please upload photo');
+      setError({...error, errorFile: 'Please upload photo'});
     } else {
       addNewUser(
-        name,
-        email,
-        phone,
-        selectedPosition,
+        userInfo.name,
+        userInfo.email,
+        userInfo.phone,
+        userInfo.selectedPosition,
         file,
       ).then((res) => {
 
@@ -65,18 +91,22 @@ export const Form: React.FC<Props> = ({ reloadUsers }) => {
           reloadUsers();
           setSent(true);
         } else if (res?.fails) {
+          let newErrors:Partial<typeof error> = {};
+
           if (res.fails.name) {
-            setErrorName(res.fails.name[0]);
+            newErrors.errorName = res.fails.name[0];
           }
           if (res.fails.email) {
-            setErrorEmail(res.fails.email[0]);
+            newErrors.errorEmail = res.fails.email[0];
           }
           if (res.fails.phone) {
-            setErrorPhone(res.fails.phone[0]);
+            newErrors.errorPhone = res.fails.phone[0];
           }
           if (res.fails.photo) {
-            setErrorFile(res.fails.photo[0]);
+            newErrors.errorFile = res.fails.photo[0];
           }
+
+          setError({...error, ...newErrors});
         }
       });
     }
@@ -97,61 +127,66 @@ export const Form: React.FC<Props> = ({ reloadUsers }) => {
         <span className='text-header'>Working with POST request</span>
         <div className='input_container'>
           <label
-            className={'form__label ' + (errorName ? 'form__label-error' : '')}
-            hidden={name === ""}
+            className={'form__label ' + (error.errorName ? 'form__label-error' : '')}
+            hidden={userInfo.name === ""}
           >
             Name
           </label>
           <input
-            className={'form__input ' + (errorName ? 'error__border' : '')}
+            className={'form__input ' + (error.errorName? 'error__border' : '')}
             placeholder='Your name'
-            value={name}
+            value={userInfo.name}
             type="text"
-            onChange={(e) => handleName(e)}
+            onChange={(e) => handleName(e.target.value)}
+            onBlur={(e)=> nameBlurHandler(e.target.value)}
           />
-          <div className='error__message'>{errorName}</div>
+
+          <div className='error__message'>{error.errorName}</div>
           <label
-            className={'form__label ' + (errorEmail ? 'form__label-error' : '')}
-            hidden={email === ""}
+            className={'form__label ' + (error.errorEmail ? 'form__label-error' : '')}
+            hidden={userInfo.email === ""}
           >
             Email
           </label>
           <input
-            className={'form__input ' + (errorEmail ? 'error__border' : '')}
+            className={'form__input ' + (error.errorEmail ? 'error__border' : '')}
             placeholder='Email'
-            value={email}
+            value={userInfo.email}
             type="text"
-            onChange={(e) => handleEmail(e)}
+            onChange={(e) => handleEmail(e.target.value)}
+            onBlur={(e)=> emailBlurHandler(e.target.value)}
           />
-          <div className='error__message'>{errorEmail}</div>
+          <div className='error__message'>{error.errorEmail}</div>
           <label
-            className={'form__label ' + (errorPhone ? 'form__label-error' : '')}
-            hidden={phone === ""}
+            className={'form__label ' + (error.errorPhone ? 'form__label-error' : '')}
+            hidden={userInfo.phone === ""}
           >
             Phone
           </label>
           <input
-            className={'form__input ' + (errorPhone ? 'error__border' : '')}
+            className={'form__input ' + (error.errorPhone ? 'error__border' : '')}
             placeholder='Phone'
-            value={phone}
+            value={userInfo.phone}
             type="text"
-            onChange={(e) => handlePhone(e)}
+            onChange={(e) => handlePhone(e.target.value)}
+            onBlur={(e)=> phoneBlurHandler(e.target.value)}
           />
           <div className='form__phone'>+38 (XXX) XXX - XX - XX</div>
-          <div className='error__message'>{errorPhone}</div>
+          <div className='error__message'>{error.errorPhone}</div>
           <div className='form__options'>
             <p>Select your position</p>
             {positions && positions.map(position => (
               <div key={position.id}>
                 <input
                   className='form__position'
-                  type="radio" id="html"
+                  type="radio"
+                  id={`position-${position.id}`}
                   name="position"
                   value={position.id}
-                  checked={selectedPosition === position.id}
-                  onChange={() => setSelectedPosition(position.id)}
+                  checked={userInfo.selectedPosition === position.id}
+                  onChange={() => setUserInfo({...userInfo, selectedPosition: position.id})}
                 />
-                <label htmlFor="html">{position.name}</label><br></br>
+                <label htmlFor={`position-${position.id}`}>{position.name}</label><br></br>
               </div>
             ))}
           </div>
@@ -167,52 +202,63 @@ export const Form: React.FC<Props> = ({ reloadUsers }) => {
                 const file = event.currentTarget.files![0];
 
                 const img = new Image();
-                var objectUrl = window.URL.createObjectURL(file);
+                const objectUrl = window.URL.createObjectURL(file);
                 img.src = objectUrl;
                 img.onload = function () {
                   window.URL.revokeObjectURL(objectUrl);
 
-                  setFileInfo({
+                  const newFileInfo = {
                     name: file.name,
                     width: img.width,
-                    heigh: img.height,
+                    height: img.height,
                     size: file.size,
+                  };
+                  setFileInfo({
+                    ...newFileInfo
                   });
                   setFile(file);
+                  console.log()
+                  console.log(validatePhoto(newFileInfo))
+
+                  if(!validatePhoto(newFileInfo)){
+                    setError({...error, errorFile: "not valid photo"})
+                  } else {
+                    setError({...error, errorFile: ''});
+                  }
                 };
               } else {
                 setFileInfo({
                   name: PHOTO_PLACEHOLDER,
                   width: 0,
-                  heigh: 0,
+                  height: 0,
                   size: 0,
                 });
                 setFile(null);
+
               }
-              setErrorFile('');
-            }
-            }
+
+            }}
           />
           <div className="file__input-container">
             <label
-              className={'file__button ' + (errorFile ? 'error__border' : '')}
+              className={'file__button ' + (error.errorFile ? 'error__border' : '')}
               htmlFor="img-uploader"
             >
               Upload
             </label>
             <input
-              className={'file__input ' + (errorFile ? 'error__border-file--input' : '')}
+              className={'file__input ' + (error.errorFile ? 'error__border-file--input' : '')}
               id="file-name"
               value={fileInfo.name}
               disabled
             />
           </div>
-          <div className='error__message'>{errorFile}</div>
+          <div className='error__message'>{error.errorFile}</div>
         </div>
         <button
           onClick={(e) => submitHandler(e)}
           className="top_magrin_50"
-          disabled={!name || !email || !phone || fileInfo.name === PHOTO_PLACEHOLDER}
+          disabled={!userInfo.name || !userInfo.email || !userInfo.phone || fileInfo.name === PHOTO_PLACEHOLDER}
         >
           Sign up
         </button>
@@ -225,4 +271,3 @@ export const Form: React.FC<Props> = ({ reloadUsers }) => {
 }
 
 export default Form;
-
